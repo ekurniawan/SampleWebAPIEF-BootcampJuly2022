@@ -53,9 +53,22 @@ namespace SampleWebAPI.Data.DAL
             }
         }
 
-        public Task<Samurai> Update(Samurai obj)
+        public async Task<Samurai> Update(Samurai obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var updateSamurai = await _context.Samurais.FirstOrDefaultAsync(s => s.Id == obj.Id);
+                if (updateSamurai == null) 
+                    throw new Exception($"Data samurai dengan id {obj.Id} tidak ditemukan");
+
+                updateSamurai.Name = obj.Name;
+                await _context.SaveChangesAsync();
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

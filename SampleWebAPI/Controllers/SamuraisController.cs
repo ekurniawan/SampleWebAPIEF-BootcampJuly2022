@@ -35,20 +35,34 @@ namespace SampleWebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Samurai> Get(int id)
+        public async Task<SamuraiReadDTO> Get(int id)
         {
+            SamuraiReadDTO samuraiDTO = new SamuraiReadDTO();
             var result = await _samuraiDAL.GetById(id);
             if (result == null) throw new Exception($"data {id} tidak ditemukan");
-            return result;
+
+            samuraiDTO.Id = result.Id;
+            samuraiDTO.Name = result.Name;
+            return samuraiDTO;
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(Samurai samurai)
+        public async Task<ActionResult> Post(SamuraiCreateDTO samuraiCreateDto)
         {
             try
             {
-                var result = await _samuraiDAL.Insert(samurai);
-                return CreatedAtAction("Get", new { id = result.Id }, result);
+                var newSamurai = new Samurai
+                {
+                    Name = samuraiCreateDto.Name
+                };
+
+                var result = await _samuraiDAL.Insert(newSamurai);
+                var samuraiReadDto = new SamuraiReadDTO
+                {
+                    Id = result.Id,
+                    Name = result.Name
+                };
+                return CreatedAtAction("Get", new { id = result.Id }, samuraiReadDto);
             }
             catch (Exception ex)
             {
