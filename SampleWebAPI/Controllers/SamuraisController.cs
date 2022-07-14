@@ -23,13 +23,13 @@ namespace SampleWebAPI.Controllers
             return results;
         }
 
-        /*[HttpGet("{nim}")]
-        public Student Get(string nim)
+        [HttpGet("{id}")]
+        public async Task<Samurai> Get(int id)
         {
-            var result = students.FirstOrDefault(s => s.Nim == nim);
-            if (result == null) throw new Exception("data tidak ditemukan");
+            var result = await _samuraiDAL.GetById(id);
+            if (result == null) throw new Exception($"data {id} tidak ditemukan");
             return result;
-        }*/
+        }
 
     }
 }

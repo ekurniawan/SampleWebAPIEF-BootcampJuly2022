@@ -27,9 +27,11 @@ namespace SampleWebAPI.Data.DAL
             return results;
         }
 
-        public Task<Samurai> GetById(int id)
+        public async Task<Samurai> GetById(int id)
         {
-            throw new NotImplementedException();
+            var result = await _context.Samurais.FirstOrDefaultAsync(s => s.Id == id);
+            if (result == null) throw new Exception($"Data samurai dengan id {id} tidak ditemukan");
+            return result;
         }
 
         public Task<IEnumerable<Samurai>> GetByName(string name)
