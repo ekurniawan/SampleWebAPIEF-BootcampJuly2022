@@ -40,7 +40,7 @@ Console.WriteLine($"{samurai.Id} - {samurai.Name}");*/
 //ProjectionSample();
 //GetSamuraiWithHorse();
 //QueryWithRawSQLInterpolated();
-GetSamuraiBattleStats();
+QueryUsingSP();
 
 Console.ReadKey();
 
@@ -298,6 +298,16 @@ void GetSamuraiBattleStats()
     foreach(var stat in stats)
     {
         Console.WriteLine($"{stat.Name} - {stat.NumberOfBattles} - {stat.EarliestBattle}");
+    }
+}
+
+void QueryUsingSP()
+{
+    var text = "light";
+    var samurais = _context.Samurais.FromSqlInterpolated($"exec dbo.SamuraisWhoSaidAWord {text}").ToList();
+    foreach(var samurai in samurais)
+    {
+        Console.WriteLine($"{samurai.Id} - {samurai.Name}");
     }
 }
 
