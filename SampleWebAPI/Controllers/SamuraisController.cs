@@ -70,5 +70,38 @@ namespace SampleWebAPI.Controllers
             }
         }
 
+        [HttpPut]
+        public async Task<ActionResult> Put(SamuraiReadDTO samuraiDto)
+        {
+            try
+            {
+                var updateSamurai = new Samurai
+                {
+                    Id = samuraiDto.Id,
+                    Name = samuraiDto.Name
+                };
+                var result = await _samuraiDAL.Update(updateSamurai);
+                return Ok(samuraiDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                await _samuraiDAL.Delete(id);
+                return Ok($"Data samurai dengan id {id} berhasil didelete");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
