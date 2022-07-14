@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SampleWebAPI.Data.DAL;
+using SampleWebAPI.Domain;
 using SampleWebAPI.Models;
 
 namespace SampleWebAPI.Controllers
@@ -8,31 +10,26 @@ namespace SampleWebAPI.Controllers
     [ApiController]
     public class SamuraisController : ControllerBase
     {
-        private List<Student> students;
-
-        public SamuraisController()
+        private readonly ISamurai _samuraiDAL;
+        public SamuraisController(ISamurai samuraiDAL)
         {
-            students = new List<Student>()
-            {
-                new Student{Nim="88997788",Nama="Erick Kurniawan"},
-                new Student{Nim="99776655",Nama="Kenshin Himura"},
-                new Student{Nim="66557788",Nama="Tanjiro Kamado"}
-            };
+            _samuraiDAL = samuraiDAL;
         }
 
         [HttpGet]
-        public IEnumerable<Student> Get()
+        public async Task<IEnumerable<Samurai>> Get()
         {
-            return students;
+            var results = await _samuraiDAL.GetAll();
+            return results;
         }
 
-        [HttpGet("{nim}")]
+        /*[HttpGet("{nim}")]
         public Student Get(string nim)
         {
             var result = students.FirstOrDefault(s => s.Nim == nim);
             if (result == null) throw new Exception("data tidak ditemukan");
             return result;
-        }
+        }*/
 
     }
 }
