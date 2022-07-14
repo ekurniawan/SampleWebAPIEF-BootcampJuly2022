@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SampleWebAPI.Data.DAL;
 using SampleWebAPI.Domain;
+using SampleWebAPI.DTO;
 using SampleWebAPI.Models;
 
 namespace SampleWebAPI.Controllers
@@ -17,10 +18,20 @@ namespace SampleWebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Samurai>> Get()
+        public async Task<IEnumerable<SamuraiReadDTO>> Get()
         {
+            List<SamuraiReadDTO> samuraiDTO = new List<SamuraiReadDTO>();
+
             var results = await _samuraiDAL.GetAll();
-            return results;
+            foreach (var result in results)
+            {
+                samuraiDTO.Add(new SamuraiReadDTO
+                {
+                    Id = result.Id,
+                    Name = result.Name
+                });
+            }
+            return samuraiDTO;
         }
 
         [HttpGet("{id}")]
@@ -29,6 +40,20 @@ namespace SampleWebAPI.Controllers
             var result = await _samuraiDAL.GetById(id);
             if (result == null) throw new Exception($"data {id} tidak ditemukan");
             return result;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Post(Samurai samurai)
+        {
+            try
+            {
+                var result = await _samuraiDAL.Insert(samurai);
+                return CreatedAtAction("Get", new { id = result.Id }, result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }
