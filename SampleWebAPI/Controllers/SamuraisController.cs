@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using SampleWebAPI.Data.DAL;
 using SampleWebAPI.Domain;
 using SampleWebAPI.DTO;
+using SampleWebAPI.Helpers;
 using SampleWebAPI.Models;
 
 namespace SampleWebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SamuraisController : ControllerBase
