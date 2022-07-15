@@ -41,17 +41,18 @@ namespace SampleWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<SamuraiReadDTO> Get(int id)
         {
-            SamuraiReadDTO samuraiDTO = new SamuraiReadDTO();
+            /*SamuraiReadDTO samuraiDTO = new SamuraiReadDTO();
+            samuraiDTO.Id = result.Id;
+            samuraiDTO.Name = result.Name;*/
             var result = await _samuraiDAL.GetById(id);
             if (result == null) throw new Exception($"data {id} tidak ditemukan");
-
-            samuraiDTO.Id = result.Id;
-            samuraiDTO.Name = result.Name;
+            var samuraiDTO = _mapper.Map<SamuraiReadDTO>(result);
+           
             return samuraiDTO;
         }
 
         [HttpGet("ByName")]
-        public async Task<IEnumerable<SamuraiReadDTO>> Hello(string name)
+        public async Task<IEnumerable<SamuraiReadDTO>> GetByName(string name)
         {
             List<SamuraiReadDTO> samuraiDtos = new List<SamuraiReadDTO>();
             var results = await _samuraiDAL.GetByName(name);
@@ -69,27 +70,8 @@ namespace SampleWebAPI.Controllers
         [HttpGet("WithQuotes")]
         public async Task<IEnumerable<SamuraiWithQuotesDTO>> GetSamuraiWithQuote()
         {
-            List<SamuraiWithQuotesDTO> samuraiWithQuoteDtos = new List<SamuraiWithQuotesDTO>();
             var results = await _samuraiDAL.GetSamuraiWithQuotes();
-     
-            foreach(var result in results)
-            {
-                List<QuoteDTO> quoteDtos = new List<QuoteDTO>();
-                foreach(var quote in result.Quotes)
-                {
-                    quoteDtos.Add(new QuoteDTO
-                    {
-                        Id = quote.Id,
-                        Text = quote.Text
-                    });
-                }
-                samuraiWithQuoteDtos.Add(new SamuraiWithQuotesDTO
-                {
-                    Id = result.Id,
-                    Name = result.Name,
-                    Quotes = quoteDtos
-                });
-            }
+            var samuraiWithQuoteDtos = _mapper.Map<IEnumerable<SamuraiWithQuotesDTO>>(results);  
             return samuraiWithQuoteDtos;
         }
 
@@ -98,17 +80,10 @@ namespace SampleWebAPI.Controllers
         {
             try
             {
-                var newSamurai = new Samurai
-                {
-                    Name = samuraiCreateDto.Name
-                };
-
+                var newSamurai = _mapper.Map<Samurai>(samuraiCreateDto);
                 var result = await _samuraiDAL.Insert(newSamurai);
-                var samuraiReadDto = new SamuraiReadDTO
-                {
-                    Id = result.Id,
-                    Name = result.Name
-                };
+                var samuraiReadDto = _mapper.Map<SamuraiReadDTO>(result);
+                
                 return CreatedAtAction("Get", new { id = result.Id }, samuraiReadDto);
             }
             catch (Exception ex)

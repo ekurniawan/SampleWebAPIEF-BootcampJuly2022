@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SampleWebAPI.Data.DAL;
 using SampleWebAPI.Domain;
 using SampleWebAPI.DTO;
+using SampleWebAPI.Helpers;
 
 namespace SampleWebAPI.Controllers
 {
@@ -16,6 +18,7 @@ namespace SampleWebAPI.Controllers
             _quoteDal = quoteDal;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<QuoteDTO>> Get()
         {
