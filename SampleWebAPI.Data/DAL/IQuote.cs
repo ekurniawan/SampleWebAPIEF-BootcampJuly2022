@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace SampleWebAPI.Data.DAL
 {
-    public interface ISamurai : ICrud<Samurai>
+    public interface IQuote : ICrud<Quote>
     {
-        Task<IEnumerable<Samurai>> GetByName(string name);
-        Task<IEnumerable<Samurai>> GetSamuraiWithQuotes();
     }
 }

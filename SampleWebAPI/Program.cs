@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+//.AddJsonOptions(x=>x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -15,8 +16,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<SamuraiContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("SamuraiConnection")).EnableSensitiveDataLogging());
 
+//menambahkan automapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 //inject class DAL
 builder.Services.AddScoped<ISamurai, SamuraiDAL>();
+builder.Services.AddScoped<IQuote, QuotesDAL>();
 
 var app = builder.Build();
 

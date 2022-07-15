@@ -52,6 +52,13 @@ namespace SampleWebAPI.Data.DAL
             return samurais;
         }
 
+        public async Task<IEnumerable<Samurai>> GetSamuraiWithQuotes()
+        {
+            var samurais = await _context.Samurais.Include(s => s.Quotes)
+                .OrderBy(s => s.Name).AsNoTracking().ToListAsync();
+            return samurais;
+        }
+
         public async Task<Samurai> Insert(Samurai obj)
         {
             try

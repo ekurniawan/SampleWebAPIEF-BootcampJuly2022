@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SampleWebAPI.Data.DAL;
 using SampleWebAPI.Domain;
@@ -12,25 +13,28 @@ namespace SampleWebAPI.Controllers
     public class SamuraisController : ControllerBase
     {
         private readonly ISamurai _samuraiDAL;
-        public SamuraisController(ISamurai samuraiDAL)
+        private readonly IMapper _mapper;
+        public SamuraisController(ISamurai samuraiDAL,IMapper mapper)
         {
             _samuraiDAL = samuraiDAL;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IEnumerable<SamuraiReadDTO>> Get()
         {
-            List<SamuraiReadDTO> samuraiDTO = new List<SamuraiReadDTO>();
-
+            //List<SamuraiReadDTO> samuraiDTO = new List<SamuraiReadDTO>();
+            /*foreach (var result in results)
+           {
+               samuraiDTO.Add(new SamuraiReadDTO
+               {
+                   Id = result.Id,
+                   Name = result.Name
+               });
+           }*/
             var results = await _samuraiDAL.GetAll();
-            foreach (var result in results)
-            {
-                samuraiDTO.Add(new SamuraiReadDTO
-                {
-                    Id = result.Id,
-                    Name = result.Name
-                });
-            }
+            var samuraiDTO = _mapper.Map<IEnumerable<SamuraiReadDTO>>(results);
+           
             return samuraiDTO;
         }
 
@@ -60,6 +64,33 @@ namespace SampleWebAPI.Controllers
                 });
             }
             return samuraiDtos;
+        }
+
+        [HttpGet("WithQuotes")]
+        public async Task<IEnumerable<SamuraiWithQuotesDTO>> GetSamuraiWithQuote()
+        {
+            List<SamuraiWithQuotesDTO> samuraiWithQuoteDtos = new List<SamuraiWithQuotesDTO>();
+            var results = await _samuraiDAL.GetSamuraiWithQuotes();
+     
+            foreach(var result in results)
+            {
+                List<QuoteDTO> quoteDtos = new List<QuoteDTO>();
+                foreach(var quote in result.Quotes)
+                {
+                    quoteDtos.Add(new QuoteDTO
+                    {
+                        Id = quote.Id,
+                        Text = quote.Text
+                    });
+                }
+                samuraiWithQuoteDtos.Add(new SamuraiWithQuotesDTO
+                {
+                    Id = result.Id,
+                    Name = result.Name,
+                    Quotes = quoteDtos
+                });
+            }
+            return samuraiWithQuoteDtos;
         }
 
         [HttpPost]
