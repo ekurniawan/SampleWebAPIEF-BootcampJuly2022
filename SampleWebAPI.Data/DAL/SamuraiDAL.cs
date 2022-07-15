@@ -45,9 +45,11 @@ namespace SampleWebAPI.Data.DAL
             return result;
         }
 
-        public Task<IEnumerable<Samurai>> GetByName(string name)
+        public async Task<IEnumerable<Samurai>> GetByName(string name)
         {
-            throw new NotImplementedException();
+            var samurais = await _context.Samurais.Where(s => s.Name.Contains(name))
+                .OrderBy(s=>s.Name).ToListAsync();
+            return samurais;
         }
 
         public async Task<Samurai> Insert(Samurai obj)

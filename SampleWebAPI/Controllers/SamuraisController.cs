@@ -46,6 +46,22 @@ namespace SampleWebAPI.Controllers
             return samuraiDTO;
         }
 
+        [HttpGet("ByName")]
+        public async Task<IEnumerable<SamuraiReadDTO>> Hello(string name)
+        {
+            List<SamuraiReadDTO> samuraiDtos = new List<SamuraiReadDTO>();
+            var results = await _samuraiDAL.GetByName(name);
+            foreach(var result in results)
+            {
+                samuraiDtos.Add(new SamuraiReadDTO
+                {
+                    Id = result.Id,
+                    Name = result.Name
+                });
+            }
+            return samuraiDtos;
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post(SamuraiCreateDTO samuraiCreateDto)
         {
